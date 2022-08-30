@@ -1,5 +1,8 @@
 '''
-Proyecto libreria para manejo de redes mesh en python
+Proyecto funciones para manejo de redes mesh en python.
+Por ahora es ineficiente, porque los datos no están encadenados,
+en cada paso debe volver a explorar todo el listado, puede ser
+rápido mientras sea pequeño y quepa completo en memoria ram.
 
 La red mesh se guarda como una lista de vertices "vias".
 Los vertices pueden estar repetidos, incluso pueden
@@ -16,7 +19,7 @@ Distancia c hasta b = 8
 Distancia a hasta i = 2
 Distancia e hasta f = 2
 Distancia e hasta d = 5
-Distancia e hasta c = 6
+Distancia e hasta c = 6...
 
 '''
 
@@ -126,7 +129,8 @@ def vecinos(malla, nodo):
     for via in vias:
         #print (via)
         if malla[via][0]==nodo:
-            v1.append(malla[via][1])
+            if malla[via][1] != nodo:  #Elimina vias que apuntan al mismo nodo
+                v1.append(malla[via][1])
         elif malla[via][1]==nodo:
             v1.append(malla[via][0])
         else:
@@ -158,7 +162,7 @@ def a2pasos(malla, inicio):
         rutas.append( [i, malla[i] ] )
     return rutas
 
-    
+# OJO ESTA FUCION NO ESTÁ COMPLETA    
     '''
     #agrego las vias paso 2
     for nodo1 in paso1:
@@ -167,7 +171,51 @@ def a2pasos(malla, inicio):
     
 '''
 
-            
+'''Nodos_alcanzables(malla, nodo)
+Calcula los nodos que son alcanzables en ese numero de pasos
+devuelve una lista.  Desde el 'nodo', que el punto donde inicia la busqueda
+Los siguientes elementos son sublistas con los elementos alcanzables
+en cada paso adicional.
+
+Entonces la salida es una lista que contiene...:
+[0] es el nodo de origen
+[1] devuelve los nodos alcanzables en un paso (es lo mismo que la funcion vecinos)
+[2] Alcanzabeles en dos pasos (como en la funcion vecinos_de_vecinos)
+[3] Alcanzables en 3 pasos
+...
+
+
+'''
+def nodos_alcanzables(malla, nodo):   
+    alcanzados=[nodo]
+    #Elemento 0 es el nodo de origen. (Nivel 0)
+    
+    nivel=vecinos(malla, nodo)  #(Nivel 1) Segundo elemento, los vecinos directos
+    if len(nivel) == 0:
+        #print("DEBUG: nivel: ", nivel)
+        return alcanzados  #?? Or return -1
+    
+    alcanzados.append(nivel)   
+    i=1 # Ya está lleno el nivel 1
+    while (1==1):
+        #print("[Debug: Dentro del While]")
+        nivel=[] #Se vacía para empezar de nuevo cada que vez que avanza un nivel
+        temp=[]
+        i=i+1 #Nivel que vamos a llenar, empezará desde el nivel 2
+        for j in alcanzados[i-1]:  #Estos son los del nivel anterior, de 1 en adelante
+            temp = vecinos(malla, j) #Buscar vecinos del nivel anterior para llenar nivel actual
+            #print("DEBUG: i, j, Temp=", i, j, temp)
+                          
+            for k in temp: #Para cada uno de los recien hayados
+                if nivel.count(k)==0 and alcanzados[i-1].count(k)==0 and alcanzados[i-2].count(k)==0 and k!=nodo:
+                    nivel.append(k) #Eliminar repetidos
+        print (len(nivel), alcanzados)
+        
+        if len(nivel)==0:        # Si no se encuentra nada nuevo...
+            return alcanzados    # Salir entregando lo encontrado hasta ahora
+        alcanzados.append(nivel) # Si se encontraron nuevos, agregarlos y seguir el ciclo
+
+         
 print("Ejemplo de datos de red:   ",distancias)
 print("Listado nodos de la red:   ", nodos(distancias))
 print("Listado de vias nulas      ", nulas(distancias))
@@ -181,11 +229,16 @@ print("Vias que llegan a 'a':     ", conecta(distancias, 'a'))
 print("Vias que llegan a 'e':     ", conecta(distancias, 'e'))
 print("Vias que llegan a 'k':     ", conecta(distancias, 'k'))
 print("Nodos vecinos de 'a':      ", vecinos(distancias, 'a'))
+print("Nodos vecinos de 'b':      ", vecinos(distancias, 'b'))
+print("Nodos vecinos de 'i':      ", vecinos(distancias, 'i'))
+print("Nodos vecinos de 'd':      ", vecinos(distancias, 'd'))
 print("Nodos vecinos de 'k':      ", vecinos(distancias, 'k'))
 print("Vias a dos pasos de 'a':   ", a2pasos(distancias, 'a'))
 print("Vecinos de vecinos de 'a': ", vecinos_de_vecinos(distancias, 'a'))
 print("Vecinos de vecinos de 'k': ", vecinos_de_vecinos(distancias, 'k'))
 print("Vecinos de vecinos de 'f': ", vecinos_de_vecinos(distancias, 'a'))
+print("Nodos alcanzables desde 'a':", nodos_alcanzables(distancias, 'a'))
+print("Nodos alcanzables desde 'k':", nodos_alcanzables(distancias, 'k'))
 
 
 #Para ir desde i hasta f
