@@ -23,25 +23,6 @@ Distancia e hasta c = 6...
 
 '''
 
-'''Datos de ejemplo. Cada elemento de la lista es un vertice o via.
-Contiene dos nodos y valor'''
-distancias = [
-['a','b',5],
-['a','c',3],
-['d','b',3],
-['c','b',8],
-['a','i',2],
-['e','f',2],
-['e','d',5],
-['e','c',6],
-['b','c',2],
-['e','d',2],
-['c','b',2],
-['f','d',2],
-['d','d',3],
-['k','k',3],  #Nodo aislado del resto de la malla, ¿Que hacemos con el?
-]
-
 
 '''lista_nodos(malla)
 Encuentra la lista de todos los nodos existentes en una malla, sin duplicados'''
@@ -215,40 +196,14 @@ def nodos_alcanzables(malla, nodo):
             return alcanzados    # Salir entregando lo encontrado hasta ahora
         alcanzados.append(nivel) # Si se encontraron nuevos, agregarlos y seguir el ciclo
 
-         
-print("Ejemplo de datos de red:   ",distancias)
-print("Listado nodos de la red:   ", nodos(distancias))
-print("Listado de vias nulas      ", nulas(distancias))
-print("Via que conecta a y b:     ", primer_trecho(distancias, 'a','b')) 
-print("Via que conecta f y e:     ",primer_trecho(distancias, 'f','e'))
-print("Vias duplicadas            ", busca_duplicados(distancias))
-print("Vias directas entre i y f: ", directos(distancias, 'i', 'f'))
-print("Vias directas entre a y b: ", directos(distancias,'a','b'))
-print("Vias directas entre d y e: ", directos(distancias, 'd', 'e'))
-print("Vias que llegan a 'a':     ", conecta(distancias, 'a'))
-print("Vias que llegan a 'e':     ", conecta(distancias, 'e'))
-print("Vias que llegan a 'k':     ", conecta(distancias, 'k'))
-print("Nodos vecinos de 'a':      ", vecinos(distancias, 'a'))
-print("Nodos vecinos de 'b':      ", vecinos(distancias, 'b'))
-print("Nodos vecinos de 'i':      ", vecinos(distancias, 'i'))
-print("Nodos vecinos de 'd':      ", vecinos(distancias, 'd'))
-print("Nodos vecinos de 'k':      ", vecinos(distancias, 'k'))
-print("Vias a dos pasos de 'a':   ", a2pasos(distancias, 'a'))
-print("Vecinos de vecinos de 'a': ", vecinos_de_vecinos(distancias, 'a'))
-print("Vecinos de vecinos de 'k': ", vecinos_de_vecinos(distancias, 'k'))
-print("Vecinos de vecinos de 'f': ", vecinos_de_vecinos(distancias, 'a'))
-print("Nodos alcanzables desde 'a':", nodos_alcanzables(distancias, 'a'))
-print("Nodos alcanzables desde 'k':", nodos_alcanzables(distancias, 'k'))
 
-
-#Para ir desde i hasta f
-'''caminar(distancias, inicio,fin)
-mejor = primer_trecho(inicio, fin)
-    if mejor !=[]
-        print (mejor)
-        mejor return 
-'''
-    
+''' A cuantos pasos del nodo1 está el nodo2'''
+def a_cuantos_nodos(malla, nodo1, nodo2):
+    alcanzados = nodos_alcanzables(malla, nodo1)
+    for i in range (1, len(alcanzados)+1):
+        for j in range(len(alcanzados[i])):
+            if alcanzados[i][j] == nodo2:
+                return i
     
     
 
